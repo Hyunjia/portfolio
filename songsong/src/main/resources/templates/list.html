@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" th:href="@{/css/base.css}" />
+<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+</head>
+<body>
+	<div th:replace="layout/header::header"></div>
+	<div class="container">
+		<h1>게시글 목록</h1>
+	</div>
+	<div class="container">
+		<div class="row">
+			<form name="search">
+				<table class="pull-right">
+					<tr>
+						<td><select class="form-control" name="searchField">
+								<option value="userID">작성자</option>
+						</select></td>
+						<td><input id="text_search" type="text" class="form-control"
+							placeholder="검색어 입력" name="searchText" maxlength="100"></td>
+						<td><button type="button" class="btn btn-primary btn-block"
+								id="searchbtn">검색</button></td>
+					</tr>
+
+				</table>
+			</form>
+		</div>
+	</div>
+	<br />
+	<br />
+	<br />
+	<br />
+	<div class="pull-right" style="width: 100px; margin: 10px 0;">
+		<a href="/form" class="btn btn-primary btn-block">등록</a>
+	</div>
+	<div id="search">
+		<div id="mainHide">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col">서비스 분류</th>
+						<th scope="col">제목</th>
+						<th scope="col">부제목</th>
+						<th scope="col">작성일</th>
+						<th scope="col">작성자</th>
+						<th scope="col">조회수</th>
+					</tr>
+
+				</thead>
+				<tbody>
+					<!-- http://localhost:9090/board/?id=2 -->
+					<tr th:each="board:${list}">
+						<td th:text="${board.id}"></td>
+						<td th:text="${board.boardType.getValue()}"></td>
+						<td><a th:href="'/select/?id='+${board.id}"
+							th:text="${board.title}"></a></td>
+						<td th:text="${board.subTitle}"></td>
+						<td th:text="${board.wdate}"></td>
+						<td th:text="${board.user.username}"></td>
+						<td th:text="${board.view}"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<br />
+		<div>
+			<!--th:with속성을 이용하여 지역변수 사용  -->
+			<nav aria-label="Page navigation" style="text-align: center;">
+				<ul class="pagination"
+					th:with="startNumber=${T(java.lang.Math).floor(list.number/5)}*5+1, endNumber=(${list.totalPages} > ${startNumber}+4) ? ${startNumber}+4 : ${list.totalPages}">
+					
+					<li><a aria-label="Previous" href="/list?page=1">«</a></li>
+					
+					<li th:style="${list.first} ? 'display:none'"><a th:href="@{/board/list(page=${list.number})}">‹</a></li>
+						
+					<li th:each="page :${#numbers.sequence(startNumber, endNumber)}"th:class="(${page} == ${list.number}+1) ? 'active'"><a
+						th:href="@{/list(page=${page})}" th:text="${page}"><span class="sr-only"></span></a></li> 
+							​
+					<li th:style="${list.last} ? 'display:none'"><a th:href="@{/list(page=${list.number}+2)}">›</a></li>
+						
+					<li><a aria-label="Next" th:href="@{/list(page=${list.totalPages})}">»</a></li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+	<div th:replace="layout/footer::footer"></div>
+	<script th:src="@{/js/jquery.min.js}"></script>
+	<script th:if="!${board?.id}">
+		$('#searchbtn').click(function() {
+			var username = $('#text_search').val();
+			alert(username);
+
+			$.ajax({
+				url : "/boardsearch/",
+				type : "get", // get방식, json으로 하면 오류 json,parse에러
+				data : {
+					username : username
+				},
+				success : function(data) {
+					$('#search').html(data)
+				}
+			})
+		});
+
+		/* document.location = restUrl + "/print?reportParams= " + encodeURI(JSON.stringify(jsonData)); */
+	</script>
+</body>
+</html>
