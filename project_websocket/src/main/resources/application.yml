@@ -1,0 +1,41 @@
+server:
+  port: 2000
+  servlet:
+    context-path: /
+    encoding:
+      charset: UTF-8
+      enabled: true
+  ssl:
+    key-store: C:/Program Files/Java/jdk1.8.0_171/bin/songkeystore.pkcs12
+    key-store-password: 123456
+    key-password: 123456
+    key-alias: songkeystore
+    trust-store: C:/Program Files/Java/jdk1.8.0_171/bin/songtrust.pkcs12
+    trust-store-password: 123456
+    
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/project_webs?serverTimeZone=Asia/Seoul
+    username: root
+    password: 1234
+#  devtools:
+#    livereload:
+#      enabled: true
+#    restart:
+#      enabled: true
+  freemarker:
+    cache: false
+  
+     
+
+
+           
+  jpa:
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: true
+
+
